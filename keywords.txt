@@ -1,0 +1,26 @@
+#######################################
+# Syntax Coloring Map for NewSoftSerial
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SiNo KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+SiNo	KEYWORD2
+AgregarSalida	KEYWORD2
+Controlar	KEYWORD2
+Apagar	KEYWORD2
+Prender	KEYWORD2
+Estado	KEYWORD2
+ConfigurarHisteresis	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
