@@ -14,27 +14,28 @@
 * Librería incluídas
 ****************************************************************************************/
 
-#include "controlSiNo.h"
+#include "Arduino.h"
+#include "controlSiNo_sca.h"
 
 /****************************************************************************************
 * Constantes
 ****************************************************************************************/
 
-const byte pinPotenciometro = A0;
-const byte pinLed = LED_BUILTIN;
-const long tiempoDelta=500; // Intervalo de tiempo entre muestras (en milisegundos)
-const unsigned int Objetivo=600;
-const unsigned int Histeresis=200;
+#define pinLed               LED_BUILTIN
+#define pinPotenciometro     A0
+#define tiempoDelta          500  // Intervalo de tiempo entre muestras (en milisegundos)
+#define Objetivo             600
+#define Histeresis           200
 
 /****************************************************************************************
 * Variables globales
 ****************************************************************************************/
 
-int Lectura = 0;
-SiNo indicadorLed(Objetivo-Histeresis, Objetivo+Histeresis);
-bool estadoIndicador = false;
+controlSiNo indicadorLed(pinLed);
+int Medicion                 = 0;
+bool estadoIndicador         = false;
 unsigned long tiempoAnterior = 0;
-unsigned long tiempoInicial = 0;
+unsigned long tiempoInicial  = 0;
 
 /****************************************************************************************
 * Funciones
@@ -43,17 +44,16 @@ unsigned long tiempoInicial = 0;
 void setup() {
   // Seteos iniciales
   pinMode(pinPotenciometro,INPUT);
-  indicadorLed.AgregarSalida(LED_BUILTIN); //pinMode(LED_BUILTIN,OUTPUT);
+  indicadorLed.Configurar(Objetivo, Histeresis, SALIDA_NORMAL);
   Serial.begin(9600);
 
   // Primer valor de la serie
-  tiempoAnterior = millis();
-  tiempoInicial = tiempoAnterior;
-  Lectura = 0;                // impongo la primer lectura
-  estadoIndicador = false;    // idem con el actuador
+  tiempoAnterior  = millis();
+  tiempoInicial   = tiempoAnterior;
+  Medicion        = 0;              // impongo la primer lectura
+  estadoIndicador = false;          // idem con el actuador
   Serial.println("Tiempo\tLectura\tEstado");
-  mostrar();  // Muestro el estado inicial!!!
-  
+  mostrar();                        // Muestro el estado inicial!!!
 }
 
 /***************************************************************************************/
@@ -67,8 +67,8 @@ void loop() {
   tiempoAnterior += tiempoDelta;  // Actualizo el tiempo
   
   // Leo, controlo y muestro
-  Lectura = analogRead(pinPotenciometro);
-  estadoIndicador = indicadorLed.Controlar(Lectura);
+  Medicion = analogRead(pinPotenciometro);
+  estadoIndicador = indicadorLed.Controlar(Medicion);
   mostrar();
 
 }
@@ -77,7 +77,7 @@ void loop() {
 void mostrar(){
   Serial.print(tiempoAnterior - tiempoInicial);
   Serial.print("\t");
-  Serial.print(Lectura);
+  Serial.print(Medicion);
   Serial.print("\t");
   Serial.println(estadoIndicador);
 }
